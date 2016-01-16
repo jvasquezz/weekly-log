@@ -1,0 +1,12 @@
+<courses>
+    <course>
+        <name />
+        <time_invested />
+    </course>
+    <course>
+        <name>Internship<name>Internship</name>
+            <time_invested>10</time_invested>
+        </name>
+        <time_invested>55</time_invested>
+    </course>
+</courses>
