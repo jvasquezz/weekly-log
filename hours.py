@@ -48,19 +48,23 @@ else:
     selected = course_options[int(index)]
     course_title = selected[:0] + selected[0 + 3:]
 
-    for child in root:
-        child
+        # print child.attrib
     # for course, times in root.iter('name'):
     #     if course.text == course_title:
     #         for times in course.iter('time_invested'):
     #             times.text = int(times.text) + int(session_t)
-
 
     course_name = xml.SubElement(course, "name")
     course_name.text = course_title
 
     course_time = xml.SubElement(course, "time_invested")
     course_time.text = session_t
+
+    for name, time in root.parse('course'):
+        if name.text == course_name:
+            print course_name
+            course_name.clear()
+
 
     tree.write('db.xml')
     print 'added '+session_t+' hours invested to ' + course_title
