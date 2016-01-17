@@ -1,7 +1,7 @@
 import os
 import xml.etree.cElementTree as xml
 from xml.etree import ElementTree
-from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import Element, SubElement, dump, parse, ElementTree
 from xml.dom import minidom
 import xml.dom.pulldom as pulldom
 import re
@@ -24,24 +24,22 @@ def get_title(iindex, oopts):
     return tit
 
 def set_attributes(rroot, elem, ttitle, ssession_t):
-    rroot.append(elem)
     '''new course to add'''
-    course_name = xml.SubElement(elem, "name")
-    course_name.text = ttitle
+    ccourse = SubElement(rroot, "att", course=ttitle, time=ssession_t)
     '''new time to add'''
-    course_time = xml.SubElement(elem, "time_invested")
-    course_time.text = ssession_t
+
 
 try:
-    tree = xml.parse('db.xml')
+    tree = ElementTree(file='db.xml')
     root = tree.getroot()
 
     '''take user's input'''
     index, session_t, course_opts = take_input()
 
     if int(index) is 0:
-        parent_map = dict((c, p) for p in root.getiterator('course') for c in p)
-        print parent_map.
+        print "one"
+    #     parent_map = dict((c, p) for p in root.getiterator('course') for c in p)
+    #     print parent_map.
     #     a = 0
     #     for ops in root.iter('course'):
     #         for subchild in ops:
@@ -50,19 +48,19 @@ try:
     else:
         course_title = get_title(index, course_opts)
 
-        '''increments hours'''
         i = 0
-        for name in root.iter('name'):
-            for time in root.iter('time_invested'):
-                if name.text == course_title:
-                    i = 1
-                    time.text = str(int(time.text) + int(session_t))
-                    name.text = name.text
-                    break
+        '''increments hours'''
+        for c in root.iter():
+            if c.get('course') == course_title:
+                timess = str(int(c.get('time')) + int(session_t))
+                root.remove(c)
+                elem_tmp = SubElement(root, "att", course=course_title, time=timess)
+                i = 1
+                break
 
 
         if not i:
-            course = xml.Element('course')
+            course = Element('course')
             set_attributes(root, course, course_title, session_t)
 
         tree.write('db.xml')
