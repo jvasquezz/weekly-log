@@ -15,7 +15,7 @@ def take_input():
     print '\n0. See logs'
     ind = raw_input('\nYour choice: ')
     sn_t = raw_input('\nThis session time in hours: ')
-    return ind, sn_t,course_options
+    return ind, sn_t, course_options
 
 def get_title(iindex, oopts):
     iindex = int(iindex)-1
@@ -36,15 +36,21 @@ try:
     tree = xml.parse('db.xml')
     root = tree.getroot()
 
-    '''take user's input '''
+    '''take user's input'''
     index, session_t, course_opts = take_input()
 
     if int(index) is 0:
-        print 'zero'
+        parent_map = dict((c, p) for p in root.getiterator('course') for c in p)
+        print parent_map.
+    #     a = 0
+    #     for ops in root.iter('course'):
+    #         for subchild in ops:
+    #             print subchild.text
+
     else:
         course_title = get_title(index, course_opts)
 
-        ''' increments hours '''
+        '''increments hours'''
         i = 0
         for name in root.iter('name'):
             for time in root.iter('time_invested'):
@@ -57,16 +63,7 @@ try:
 
         if not i:
             course = xml.Element('course')
-
             set_attributes(root, course, course_title, session_t)
-
-            # root.append(course)
-            # '''new course to add'''
-            # course_name = xml.SubElement(course, "name")
-            # course_name.text = course_title
-            # '''new time to add'''
-            # course_time = xml.SubElement(course, "time_invested")
-            # course_time.text = session_t
 
         tree.write('db.xml')
 
@@ -75,22 +72,18 @@ try:
 except IOError as e:
     i, time, opts = take_input()
 
-    fst_root = xml.Element('courses')
-    fst_course = xml.Element('course')
-    title = get_title(i, opts)
+    froot = xml.Element('courses')
+    fcourse = xml.Element('course')
+    ftitle = get_title(i, opts)
 
-    set_attributes(fst_root, fst_course, title, time)
+    set_attributes(froot, fcourse, ftitle, time)
 
-    # fst_root.append(fst_course)
-    # name_se = xml.SubElement(fst_course, 'name')
-    # name_se.text = title
-    # time_se = xml.SubElement(fst_course, 'time_invested')
-    # time_se.text = time
-
-    tree = xml.ElementTree(fst_root)
+    tree = xml.ElementTree(froot)
 
     with open("db.xml", "w") as fh:
         tree.write(fh)
 
-    print 'added '+time+' hours invested to ' + title
+    print 'added '+time+' hours invested to ' + ftitle
 
+except:
+    print '-debug-'
