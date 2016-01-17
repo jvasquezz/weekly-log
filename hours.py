@@ -14,7 +14,10 @@ def take_input():
         print opt
     print '\n0. See logs'
     ind = raw_input('\nYour choice: ')
-    sn_t = raw_input('\nThis session time in hours: ')
+    if int(ind) is 0:
+        sn_t = 0
+    else:
+        sn_t = raw_input('\nThis session time in hours: ')
     return ind, sn_t, course_options
 
 def get_title(iindex, oopts):
@@ -37,19 +40,13 @@ try:
     index, session_t, course_opts = take_input()
 
     if int(index) is 0:
-        print "one"
-    #     parent_map = dict((c, p) for p in root.getiterator('course') for c in p)
-    #     print parent_map.
-    #     a = 0
-    #     for ops in root.iter('course'):
-    #         for subchild in ops:
-    #             print subchild.text
-
+        for e in root.iter():
+            print e.get('course'), e.get('time')
     else:
         course_title = get_title(index, course_opts)
 
         i = 0
-        '''increments hours'''
+        '''updates hours instead of creating new or setting other attributes'''
         for c in root.iter():
             if c.get('course') == course_title:
                 timess = str(int(c.get('time')) + int(session_t))
@@ -58,16 +55,17 @@ try:
                 i = 1
                 break
 
-
+        '''if there is new class then create new SubElement setting all its attributes'''
         if not i:
             course = Element('course')
             set_attributes(root, course, course_title, session_t)
 
         tree.write('db.xml')
 
-        print 'added '+session_t+' hours invested to ' + course_title
+        print 'Added: '+session_t+' hour(s) invested to ' + course_title
 
 except IOError as e:
+    '''When there is no file created, create new file and set attributes'''
     i, time, opts = take_input()
 
     froot = xml.Element('courses')
