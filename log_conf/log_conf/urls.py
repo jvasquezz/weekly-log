@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from log_app import views
+from log_ap import views
 from django.conf.urls import patterns, include, url
 
 urlpatterns = [
     url(r'^log/', views.log),
+    url(r'^$', views.index),
 ]
